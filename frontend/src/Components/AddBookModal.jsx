@@ -1,36 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addBook, updateBook } from "../redux/bookSlice";
+import { addBook } from "../redux/bookSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
+import toast from "react-hot-toast";
 
-function BookFormModal({ open, onClose, editingBook }) {
+function BookFormModal({ open, onClose }) {
   const dispatch = useDispatch();
-  const [form, setForm] = useState({ title: "", author: "", genre: "", status: "available" });
-
-  useEffect(() => {
-    if (editingBook) {
-      setForm(editingBook);
-    } else {
-      setForm({ title: "", author: "", genre: "", status: "available" });
-    }
-  }, [editingBook]);
+  const [form, setForm] = useState({ title: "", author: "", genre: "", status: "available", year: "" });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    if (editingBook) {
-      dispatch(updateBook({ updatedBook: form }));
-    } else {
-      dispatch(addBook(form));
+  const handleSubmit = async () => {
+    try {
+      await dispatch(addBook(form)).unwrap();
+      toast.success("Book added successfully");
+      onClose();
+      setForm({ title: "", author: "", genre: "", status: "available", year: "" });
+    } catch {
+      toast.error("Failed to add book");
     }
-    onClose(); 
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{editingBook ? "Edit Book" : "Add Book"}</DialogTitle>
+      <DialogTitle>Add Book</DialogTitle>
       <DialogContent className="flex flex-col gap-4">
         <TextField
           label="Title"
@@ -60,12 +55,18 @@ function BookFormModal({ open, onClose, editingBook }) {
           onChange={handleChange}
           fullWidth
         />
+        <TextField
+          label="Published Year"
+          name="year"
+          type="number"
+          value={form.year}
+          onChange={handleChange}
+          fullWidth
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="secondary">Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
-          {editingBook ? "Update" : "Add"}
-        </Button>
+        <Button onClick={handleSubmit} variant="contained" color="primary">Add</Button>
       </DialogActions>
     </Dialog>
   );

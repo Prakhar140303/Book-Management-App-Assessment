@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 import { updateBook } from "../redux/bookSlice";
+import toast from "react-hot-toast";
 
 function BookFormModal({ open, onClose, editingBook }) {
   const dispatch = useDispatch();
@@ -25,7 +26,13 @@ function BookFormModal({ open, onClose, editingBook }) {
   const handleSave = () => {
     if (!editingBook) return;
     const updatedBook = { ...editingBook, ...form };
-    dispatch(updateBook({ updatedBook }));
+    try{
+      dispatch(updateBook({ updatedBook }));
+      toast.success("Book updated successfully");
+    }catch{
+      toast.error("Failed to update the book");
+
+    }
     onClose();
   };
 

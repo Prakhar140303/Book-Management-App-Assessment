@@ -3,6 +3,7 @@ import { Table, TableHead, TableRow, TableCell, TableBody, Button, Chip, IconBut
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBook, fetchBooks, updateBook } from "../redux/bookSlice";
+import toast from "react-hot-toast";
 
 function BookTable() {
   const { books, total, limit: reduxLimit, filters } = useSelector((state) => state.books);
@@ -23,7 +24,12 @@ function BookTable() {
   const handleUpdateStatus = (book) => {
     const status = book.status === "Available" ? "Issue" : "Available";
     const updatedBook = { ...book, status };
-    dispatch(updateBook({ updatedBook }));
+    try{
+      dispatch(updateBook({ updatedBook }));
+      toast.success(`${book.title}'s status updated successfully`)
+    }catch(err){
+      toast.error('Failed to update status');
+    }
   };
 
   const handleEditClick = (book) => {
