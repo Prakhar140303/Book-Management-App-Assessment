@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBook } from "../redux/bookSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
-import toast from "react-hot-toast";
+import {toast} from "react-hot-toast";
 
 function BookFormModal({ open, onClose }) {
   const dispatch = useDispatch();
@@ -19,10 +19,10 @@ function BookFormModal({ open, onClose }) {
       setForm({ title: "", author: "", genre: "", status: "available", year: "" });
     } catch {
       toast.error("Failed to add book");
-    }
-    onClose();
+    }finally {
+    setTimeout(() => onClose(), 100);
+  }
   };
-
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Book</DialogTitle>

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
 const API_URL = "http://localhost:5000/api/books";
 
 export const fetchBooks = createAsyncThunk(
@@ -13,7 +12,6 @@ export const fetchBooks = createAsyncThunk(
         params: { page, limit, ...filters },
       });
 
-      console.log("data from fetchBooks", res.data);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
