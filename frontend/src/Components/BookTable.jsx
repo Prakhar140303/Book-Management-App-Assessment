@@ -20,7 +20,7 @@ function BookTable() {
   }, [dispatch, page, limit, filters]);
 
   const totalPages = Math.ceil((total || 0) / limit);
-
+  console.log({total});
   const handleUpdateStatus = (book) => {
     const status = book.status === "Available" ? "Issue" : "Available";
     const updatedBook = { ...book, status };

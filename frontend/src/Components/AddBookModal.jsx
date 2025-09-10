@@ -16,11 +16,11 @@ function BookFormModal({ open, onClose }) {
     try {
       await dispatch(addBook(form)).unwrap();
       toast.success("Book added successfully");
-      onClose();
       setForm({ title: "", author: "", genre: "", status: "available", year: "" });
     } catch {
       toast.error("Failed to add book");
     }
+    onClose();
   };
 
   return (

@@ -89,7 +89,7 @@ const booksSlice = createSlice({
       })
       .addCase(fetchBooks.fulfilled, (state, action) => {
         state.loading = false;
-  
+        state.total = action.payload.total;
         state.books = action.payload.data || action.payload;
       })
       .addCase(fetchBooks.rejected, (state, action) => {

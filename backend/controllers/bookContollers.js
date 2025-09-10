@@ -29,6 +29,7 @@ export const getBooks = (req, res) => {
 
     res.json({
       success: true,
+      total: filteredBooks.length,
       data: paginatedBooks,
     });
   } catch (err) {
