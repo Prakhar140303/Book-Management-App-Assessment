@@ -43,7 +43,7 @@ export const getBooks = (req, res) => {
 
 export const addBook =   (req, res) => {
   try{
-    const newBook = { id: books.length + 1, ...req.body };
+    const newBook = { id: Math.random()*100000, ...req.body };
     books.push(newBook);
     res.status(201).json(newBook);
   }catch(err){
@@ -64,8 +64,20 @@ export const updateBook =(req, res) => {
   res.json(books[index]);
 }
 
-export const deleteBook =  (req, res) => {
-  const { id } = req.params;
-  books = books.filter((b) => b.id != id);
-  res.json({ message: "Book deleted successfully" });
-}
+export const deleteBook = (req, res) => {
+  try{
+    const { id } = req.params;
+
+    const index = books.findIndex((b) => b.id == id);
+    if (index === -1) return res.status(404).json({ message: "Book not found" });
+  
+    books.splice(index, 1);
+  
+    res.json({
+      success : true, 
+      message: "Book deleted successfully" });
+
+  }catch(err){
+    res.status(501).hson("Error deleting the book : ",err);
+  }
+};

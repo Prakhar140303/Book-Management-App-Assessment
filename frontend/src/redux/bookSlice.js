@@ -47,7 +47,6 @@ export const updateBook = createAsyncThunk(
   }
 );
 
-// Delete book
 export const deleteBook = createAsyncThunk(
   "/books/deleteBook",
   async (id, { rejectWithValue }) => {

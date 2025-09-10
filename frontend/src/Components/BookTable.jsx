@@ -1,31 +1,54 @@
 import { useEffect, useState } from "react";
-import { Table, TableHead, TableRow, TableCell, TableBody, Button, Chip, IconButton } from "@mui/material";
+import { Table, TableHead, TableRow, TableCell, TableBody, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 import { useSelector, useDispatch } from "react-redux";
-import { fetchBooks, updateBook } from "./../redux/bookSlice";
+import { deleteBook, fetchBooks, updateBook } from "../redux/bookSlice";
 
-function BookTable({ onEdit }) {
+function BookTable() {
   const { books, total, limit: reduxLimit, filters } = useSelector((state) => state.books);
-  const [page, setPage] = useState(1); // our pagination is 1-based
+  const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(reduxLimit || 10);
   const dispatch = useDispatch();
 
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editingBook, setEditingBook] = useState(null);
+  const [form, setForm] = useState({ title: "", author: "", genre: "", status: "Available", year: "" });
+
   useEffect(() => {
     dispatch(fetchBooks({ page, limit }));
-  }, [dispatch, page, limit,filters]);
+  }, [dispatch, page, limit, filters]);
 
   const totalPages = Math.ceil((total || 0) / limit);
-  const handleUpdate = (book) =>{
-    const status = book.status === "Available" ? "Issue" :"Available";
-    const updatedBook = {...book,status : status};
-    dispatch(updateBook({updatedBook}));
+
+  const handleUpdateStatus = (book) => {
+    const status = book.status === "Available" ? "Issue" : "Available";
+    const updatedBook = { ...book, status };
+    dispatch(updateBook({ updatedBook }));
+  };
+
+  const handleEditClick = (book) => {
+    setEditingBook(book);
+    setForm({ title: book.title, author: book.author, genre: book.genre, status: book.status, year: book.year });
+    setOpenEdit(true);
+  };
+
+  const handleFormChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveEdit = () => {
+    dispatch(updateBook({ updatedBook: { ...editingBook, ...form } }));
+    setOpenEdit(false);
+    setEditingBook(null);
+  };
+  const handleDelete = (id)=>{
+    dispatch(deleteBook(id)); 
   }
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <Table>
         <TableHead>
-          <TableRow >
+          <TableRow>
             <TableCell>Title</TableCell>
             <TableCell>Author</TableCell>
             <TableCell>Genre</TableCell>
@@ -41,19 +64,18 @@ function BookTable({ onEdit }) {
               <TableCell>{book.author}</TableCell>
               <TableCell>{book.genre}</TableCell>
               <TableCell>{book.year}</TableCell>
-              <TableCell onClick={()=>{handleUpdate(book)}} className="hover:cursor-pointer">
+              <TableCell onClick={() => handleUpdateStatus(book)} className="hover:cursor-pointer">
                 <Chip
                   label={book.status}
                   color={book.status === "Available" ? "success" : "default"}
-                  
                 />
               </TableCell>
               <TableCell>
-                <Button size="small" onClick={() => onEdit(book)}>
-                  Edit 
+                <Button size="small" onClick={() => handleEditClick(book)}>
+                  Edit
                 </Button>
-                <IconButton aria-label="delete" size="small">
-                  <DeleteIcon fontSize="inherit"/>
+                <IconButton aria-label="delete" size="small" onClick={()=>handleDelete(book.id)}>
+                  <DeleteIcon fontSize="inherit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -61,8 +83,8 @@ function BookTable({ onEdit }) {
         </TableBody>
       </Table>
 
-     {/* pagination */}
-      <div className="flex justify-center gap-2  items-center mt-4">
+      {/* Pagination */}
+      <div className="flex justify-center gap-2 items-center mt-4">
         <Button
           variant="outlined"
           disabled={page === 1}
@@ -91,6 +113,47 @@ function BookTable({ onEdit }) {
           Next
         </Button>
       </div>
+
+      <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Edit Book</DialogTitle>
+        <DialogContent className="flex flex-col gap-4">
+          <TextField
+            label="Title"
+            name="title"
+            value={form.title}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            label="Author"
+            name="author"
+            value={form.author}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            label="Genre"
+            name="genre"
+            value={form.genre}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            label="Published Year"
+            name="year"
+            type="number"
+            value={form.year}
+            onChange={handleFormChange}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEdit(false)}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleSaveEdit}>
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

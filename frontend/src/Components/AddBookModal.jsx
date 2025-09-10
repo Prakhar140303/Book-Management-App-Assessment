@@ -1,20 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { addBook, updateBook } from "../redux/bookSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
-import { updateBook } from "../redux/bookSlice";
 
 function BookFormModal({ open, onClose, editingBook }) {
   const dispatch = useDispatch();
-  const [form, setForm] = useState({ title: "", author: "", genre: "", year: "" });
+  const [form, setForm] = useState({ title: "", author: "", genre: "", status: "available" });
 
   useEffect(() => {
     if (editingBook) {
-      setForm({
-        title: editingBook.title || "",
-        author: editingBook.author || "",
-        genre: editingBook.genre || "",
-        year: editingBook.year || "",
-      });
+      setForm(editingBook);
+    } else {
+      setForm({ title: "", author: "", genre: "", status: "available" });
     }
   }, [editingBook]);
 
@@ -22,16 +19,18 @@ function BookFormModal({ open, onClose, editingBook }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    if (!editingBook) return;
-    const updatedBook = { ...editingBook, ...form };
-    dispatch(updateBook({ updatedBook }));
-    onClose();
+  const handleSubmit = () => {
+    if (editingBook) {
+      dispatch(updateBook({ updatedBook: form }));
+    } else {
+      dispatch(addBook(form));
+    }
+    onClose(); 
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit Book</DialogTitle>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>{editingBook ? "Edit Book" : "Add Book"}</DialogTitle>
       <DialogContent className="flex flex-col gap-4">
         <TextField
           label="Title"
@@ -55,18 +54,17 @@ function BookFormModal({ open, onClose, editingBook }) {
           fullWidth
         />
         <TextField
-          label="Published Year"
-          name="year"
-          type="number"
-          value={form.year}
+          label="Status"
+          name="status"
+          value={form.status}
           onChange={handleChange}
           fullWidth
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" color="primary" onClick={handleSave}>
-          Save Changes
+        <Button onClick={onClose} color="secondary">Cancel</Button>
+        <Button onClick={handleSubmit} variant="contained" color="primary">
+          {editingBook ? "Update" : "Add"}
         </Button>
       </DialogActions>
     </Dialog>
