@@ -1,0 +1,22 @@
+export let books = [
+  { id: 1, title: "The Hobbit", author: "J.R.R. Tolkien", genre: "Fantasy", year: 1937, status: "Available" },
+  { id: 2, title: "1984", author: "George Orwell", genre: "Dystopian", year: 1949, status: "Issued" },
+  { id: 3, title: "To Kill a Mockingbird", author: "Harper Lee", genre: "Fiction", year: 1960, status: "Available" },
+  { id: 4, title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Classic", year: 1925, status: "Available" },
+  { id: 5, title: "Harry Potter", author: "J.K. Rowling", genre: "Fantasy", year: 1997, status: "Issued" },
+  { id: 6, title: "The Catcher in the Rye", author: "J.D. Salinger", genre: "Classic", year: 1951, status: "Available" },
+  { id: 7, title: "Pride and Prejudice", author: "Jane Austen", genre: "Romance", year: 1813, status: "Available" },
+  { id: 8, title: "The Alchemist", author: "Paulo Coelho", genre: "Adventure", year: 1988, status: "Issued" },
+  { id: 9, title: "The Lord of the Rings", author: "J.R.R. Tolkien", genre: "Fantasy", year: 1954, status: "Available" },
+  { id: 10, title: "Animal Farm", author: "George Orwell", genre: "Satire", year: 1945, status: "Available" },
+  { id: 11, title: "Moby Dick", author: "Herman Melville", genre: "Adventure", year: 1851, status: "Issued" },
+  { id: 12, title: "Brave New World", author: "Aldous Huxley", genre: "Dystopian", year: 1932, status: "Available" },
+  { id: 13, title: "War and Peace", author: "Leo Tolstoy", genre: "Historical", year: 1869, status: "Available" },
+  { id: 14, title: "Crime and Punishment", author: "Fyodor Dostoevsky", genre: "Psychological", year: 1866, status: "Issued" },
+  { id: 15, title: "The Odyssey", author: "Homer", genre: "Epic", year: -800, status: "Available" },
+  { id: 16, title: "The Divine Comedy", author: "Dante Alighieri", genre: "Poetry", year: 1320, status: "Available" },
+  { id: 17, title: "Don Quixote", author: "Miguel de Cervantes", genre: "Classic", year: 1605, status: "Issued" },
+  { id: 18, title: "Hamlet", author: "William Shakespeare", genre: "Tragedy", year: 1603, status: "Available" },
+  { id: 19, title: "The Brothers Karamazov", author: "Fyodor Dostoevsky", genre: "Philosophy", year: 1880, status: "Available" },
+  { id: 20, title: "Ulysses", author: "James Joyce", genre: "Modernist", year: 1922, status: "Issued" }
+];
