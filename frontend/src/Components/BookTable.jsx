@@ -1,23 +1,44 @@
 import { useEffect, useState } from "react";
-import { Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
+import {
+  Button,
+  Chip,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBook, fetchBooks, updateBook } from "../redux/bookSlice";
 import { toast } from "react-hot-toast";
+import { useParams, useNavigate } from "react-router-dom";
 
 function BookTable() {
-  const { books, total, limit: reduxLimit, filters } = useSelector((state) => state.books);
-  const [page, setPage] = useState(1);
+  const { books, total, limit: reduxLimit, filters } = useSelector(
+    (state) => state.books
+  );
+  const { page } = useParams(); 
+  const navigate = useNavigate();
+
+  const currentPage = parseInt(page, 10) || 1; 
   const [limit, setLimit] = useState(reduxLimit || 10);
   const dispatch = useDispatch();
 
   const [openEdit, setOpenEdit] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
-  const [form, setForm] = useState({ title: "", author: "", genre: "", status: "Available", year: "" });
+  const [form, setForm] = useState({
+    title: "",
+    author: "",
+    genre: "",
+    status: "Available",
+    year: "",
+  });
 
   useEffect(() => {
-    dispatch(fetchBooks({ page, limit }));
-  }, [dispatch, page, limit, filters]);
+    dispatch(fetchBooks({ page: currentPage, limit }));
+  }, [dispatch, currentPage, limit, filters]);
 
   const totalPages = Math.ceil((total || 0) / limit);
 
@@ -34,7 +55,13 @@ function BookTable() {
 
   const handleEditClick = (book) => {
     setEditingBook(book);
-    setForm({ title: book.title, author: book.author, genre: book.genre, status: book.status, year: book.year });
+    setForm({
+      title: book.title,
+      author: book.author,
+      genre: book.genre,
+      status: book.status,
+      year: book.year,
+    });
     setOpenEdit(true);
   };
 
@@ -92,7 +119,11 @@ function BookTable() {
                   <Button size="small" onClick={() => handleEditClick(book)}>
                     Edit
                   </Button>
-                  <IconButton aria-label="delete" size="small" onClick={() => handleDelete(book.id)}>
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={() => handleDelete(book.id)}
+                  >
                     <DeleteIcon fontSize="inherit" />
                   </IconButton>
                 </td>
@@ -102,11 +133,12 @@ function BookTable() {
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center gap-2 items-center mt-4">
         <Button
           variant="outlined"
-          disabled={page === 1}
-          onClick={() => setPage((prev) => prev - 1)}
+          disabled={currentPage === 1}
+          onClick={() => navigate(`/${currentPage - 1}`)}
         >
           Previous
         </Button>
@@ -115,8 +147,8 @@ function BookTable() {
           {Array.from({ length: totalPages }, (_, i) => (
             <Button
               key={i + 1}
-              variant={page === i + 1 ? "contained" : "outlined"}
-              onClick={() => setPage(i + 1)}
+              variant={currentPage === i + 1 ? "contained" : "outlined"}
+              onClick={() => navigate(`/${i + 1}`)}
             >
               {i + 1}
             </Button>
@@ -125,20 +157,54 @@ function BookTable() {
 
         <Button
           variant="outlined"
-          disabled={page === totalPages}
-          onClick={() => setPage((prev) => prev + 1)}
+          disabled={currentPage === totalPages}
+          onClick={() => navigate(`/${currentPage + 1}`)}
         >
           Next
         </Button>
       </div>
 
-      <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
+
+
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Edit Book</DialogTitle>
         <DialogContent className="flex flex-col gap-4">
-          <TextField label="Title" name="title" value={form.title} onChange={handleFormChange} fullWidth />
-          <TextField label="Author" name="author" value={form.author} onChange={handleFormChange} fullWidth />
-          <TextField label="Genre" name="genre" value={form.genre} onChange={handleFormChange} fullWidth />
-          <TextField label="Published Year" name="year" type="number" value={form.year} onChange={handleFormChange} fullWidth />
+          <TextField
+            label="Title"
+            name="title"
+            value={form.title}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            label="Author"
+            name="author"
+            value={form.author}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            label="Genre"
+            name="genre"
+            value={form.genre}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            label="Published Year"
+            name="year"
+            type="number"
+            value={form.year}
+            onChange={handleFormChange}
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEdit(false)}>Cancel</Button>

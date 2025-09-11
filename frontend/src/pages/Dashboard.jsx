@@ -1,12 +1,14 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
+import { useParams } from "react-router-dom";
 import BookTableSkelton from '../Components/Skeletons/BookTableSkeleton.jsx';
 
-// Lazy load components
+// Lazy loading the  components 
 const Topbar = lazy(() => import("../Components/Topbar"));
 const BookTable = lazy(() => import("../components/BookTable"));
 
 function Dashboard() {
-
+  const { page } = useParams();   
+  const currentPage = parseInt(page, 10) || 1;
 
   return (
     <div className="flex w-[100vw]">
@@ -21,10 +23,8 @@ function Dashboard() {
         </Suspense>
 
         <Suspense fallback={<BookTableSkelton />}>
-          <BookTable  />
+          <BookTable page={currentPage} />
         </Suspense>
-
-        
       </div>
     </div>
   );
